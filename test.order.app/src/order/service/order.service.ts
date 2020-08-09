@@ -1,3 +1,4 @@
+import { ListOrderQuery } from './../query/impl/list-order.query';
 import { DeclineOrderCommand } from './../command/impl/decline-order.command';
 import { GetOrderQuery } from './../query/impl/order.query';
 import { Injectable } from '@nestjs/common';
@@ -10,7 +11,7 @@ export class OrderService {
   constructor(
     private _commandBus: CommandBus,
     private readonly _queryBus: QueryBus,
-  ) {}
+  ) { }
 
   async createOrder(order: OrderDTO) {
     const orderCommand: CreateOrderCommand = new CreateOrderCommand(order.product, order.amount, order.user);
@@ -29,5 +30,10 @@ export class OrderService {
   async getOrder(id: string): Promise<OrderDTO> {
     const getOrderQuery: GetOrderQuery = new GetOrderQuery(id);
     return await this._queryBus.execute(getOrderQuery);
+  }
+
+  async listOrder(): Promise<any[]> {
+    const listOrderQuery: ListOrderQuery = new ListOrderQuery();
+    return await this._queryBus.execute(listOrderQuery);
   }
 }

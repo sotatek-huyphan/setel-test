@@ -1,6 +1,6 @@
 export enum OrderState {
   Created,
   Confirmed,
-  Declined,
+  Cancelled,
   Delivered
 }

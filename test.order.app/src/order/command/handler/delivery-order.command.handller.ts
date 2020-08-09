@@ -13,7 +13,7 @@ export class DeliveryOrderCommandHandler
     async execute(command: DeliveryOrderCommand): Promise<any> {
       const { orderId } = command;
       let orderAggregate = this._publisher.mergeObjectContext(
-        await this._orderRepository.Rehydrate(orderId)
+        await this._orderRepository.find(orderId)
       );
 
       orderAggregate.deliveryOrder();

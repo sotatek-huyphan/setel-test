@@ -9,7 +9,7 @@ export class GetOrderQueryHandler implements IQueryHandler<GetOrderQuery> {
 
   async execute(query: GetOrderQuery): Promise<any> {
     const id  = query.id;
-    const order = await this._orderRepository.Rehydrate(id);
+    const order = await this._orderRepository.find(id);
     const orderDTO: OrderDTO = {
       _id: order.id,
       product: order.getProduct(),

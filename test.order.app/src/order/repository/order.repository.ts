@@ -40,7 +40,7 @@ export class OrderRepository extends EventStoreRepository {
     return rs;
   }
 
-  public async Rehydrate(aggregateId: string) {
+  public async find(aggregateId: string) {
     const eventDocs = await this.eventModel
       .find({ aggregateId: aggregateId })
       .exec();
@@ -49,9 +49,31 @@ export class OrderRepository extends EventStoreRepository {
       throw new NotFoundException("Aggregate not found");
     }
 
+    return this.replay(aggregateId, eventDocs);
+  }
+
+  public replay(aggregateId: string, eventDocs: EventDoc[]) {
     const aggregateModel: OrderAggregate = new OrderAggregate(aggregateId);
     aggregateModel.loadFromHistory(eventDocs.map(x => this.mapDocEvent(x)));
     return aggregateModel;
+  }
+
+  public async list() {
+    const eventDocs = await this.eventModel.find().exec();
+
+    const grouped = eventDocs.reduce((r, a) => {
+      r[a.aggregateId] = [...r[a.aggregateId] || [], a];
+      return r;
+    }, {});
+
+    const result = [];
+    for (var prop in grouped) {
+      if (Object.prototype.hasOwnProperty.call(grouped, prop)) {
+        const arr = grouped[prop];
+        result.push(this.replay(prop, arr));
+      }
+    }
+    return result;
   }
 
   private mapDocEvent(x: EventDoc): any {

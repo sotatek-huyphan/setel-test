@@ -13,7 +13,7 @@ export class ConfirmOrderCommandHandler
   async execute(command: ConfirmOrderCommand): Promise<any> {
     const { orderId, author } = command;
     let orderAggregate = this._publisher.mergeObjectContext(
-      await this._orderRepository.Rehydrate(orderId)
+      await this._orderRepository.find(orderId)
     );
 
     orderAggregate.confirmOrder();

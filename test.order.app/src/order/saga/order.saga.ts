@@ -36,7 +36,7 @@ export class OrderSaga {
   confirmedOder = (events$: Observable<any>): Observable<ICommand> => {
     return events$.pipe(
       ofType(OrderConfirmedEvent),
-      delay(200000),
+      delay(20000),
       map(
         (event: OrderConfirmedEvent) =>
           new DeliveryOrderCommand(event.aggregateId),

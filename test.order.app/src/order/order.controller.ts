@@ -8,17 +8,18 @@ import {
   Param,
   Post,
   Put,
+  Patch,
 } from '@nestjs/common';
 import { OrderDTO } from './dto/order.dto';
 import { OrderService } from './service/order.service';
 
-@Controller('order')
+@Controller()
 export class OrderController {
   private readonly _logger = new Logger(OrderController.name);
 
   constructor(private _orderService: OrderService) {}
 
-  @Post()
+  @Post('order')
   async createOrder(@Body() order: OrderDTO) {
     // return res.status(500);
     const rs = await this._orderService.createOrder(order);
@@ -30,7 +31,7 @@ export class OrderController {
     }
   }
 
-  @Get(':id')
+  @Get('order/:id')
   async getOrder(@Param('id') id: string) {
     if (!id) {
       throw new HttpException({ error: 'BAD_REQUEST' }, HttpStatus.BAD_REQUEST);
@@ -42,7 +43,12 @@ export class OrderController {
     return rs;
   }
 
-  @Put(':id')
+  @Get('orders')
+  async listOrder() {
+    return await this._orderService.listOrder();
+  }
+
+  @Patch('order/:id')
   async cancelOrder(@Param('id') id: string, @Body() order: OrderDTO) {
     if (!id) {
       throw new HttpException({ error: 'BAD_REQUEST' }, HttpStatus.BAD_REQUEST);

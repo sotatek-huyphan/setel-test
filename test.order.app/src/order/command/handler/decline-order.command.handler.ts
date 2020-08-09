@@ -14,7 +14,7 @@ export class DeclineOrderCommandHandler
     async execute(command: DeclineOrderCommand): Promise<any> {
       const { orderId } = command;
       let orderAggregate = this._publisher.mergeObjectContext(
-        await this._orderRepository.Rehydrate(orderId)
+        await this._orderRepository.find(orderId)
       );
 
       orderAggregate.cancelOrder();

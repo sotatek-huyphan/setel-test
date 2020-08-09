@@ -18,6 +18,7 @@ import { OrderSaga } from './saga/order.saga';
 import { orderProviders } from './schema/order.provider';
 import { OrderService } from './service/order.service';
 import { AppEventPublisher } from '../core/event-module/event-publisher/event.publisher';
+import { ListOrderQueryHandler } from './query/handler/list-order.query.handler';
 
 export const CommandHandlers = [
   CreateOrderCommandHandler,
@@ -31,7 +32,7 @@ export const EventHandlers = [
   OrderDeclinedEventHandler,
   OderDeliveredEventHandler,
 ];
-const QueryHandlers = [GetOrderQueryHandler];
+const QueryHandlers = [GetOrderQueryHandler, ListOrderQueryHandler];
 
 @Module({
   imports: [
