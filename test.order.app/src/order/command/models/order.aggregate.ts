@@ -1,3 +1,4 @@
+import { ConcurrencyException } from './../../../core/exceptions/concurrency.exception';
 import { BaseAggregateRoot } from '../../../core/models/base-aggregate-root';
 import { OrderConfirmedEvent } from './../../event/impl/order-confirmed.event';
 import { OrderCreatedEvent } from './../../event/impl/order-created.event';
@@ -24,24 +25,30 @@ export class OrderAggregate extends BaseAggregateRoot {
     this._author = author;
   }
 
-  public createOrder() {
-    ++ this.version;
-    this.apply(new OrderCreatedEvent(this.id, this._product, this._amount, this._author, this.version));
+  public createOrder({ product, amount, author }) {
+    const event = new OrderCreatedEvent(
+      this.id,
+      product,
+      amount,
+      author,
+      this.version + 1,
+    );
+    this.apply(event);
   }
 
   public confirmOrder() {
-    ++ this.version;
-    this.apply(new OrderConfirmedEvent(this.id, this.version));
+    const event = new OrderConfirmedEvent(this.id, this.version + 1);
+    this.apply(event);
   }
 
   public cancelOrder() {
-    ++ this.version;
-    this.apply(new OrderDeclinedEvent(this.id, this.version));
+    const event = new OrderDeclinedEvent(this.id, this.version + 1);
+    this.apply(event);
   }
 
   public deliveryOrder() {
-    ++ this.version;
-    this.apply(new OrderDeliveredEvent(this.id, this.version));
+    const event = new OrderDeliveredEvent(this.id, this.version + 1);
+    this.apply(event);
   }
 
   public onOrderCreatedEvent(event: OrderCreatedEvent) {
@@ -50,22 +57,46 @@ export class OrderAggregate extends BaseAggregateRoot {
     this._product = product;
     this._amount = amount;
     this._author = author;
-    this.version = version;
+
+    if (this.validateVersion(this.version, version)) {
+      this.version = version;
+    } else {
+      throw new ConcurrencyException();
+    }
   }
 
-  public onOrderConfirmedEvent(event: OrderCreatedEvent) {
+  public onOrderConfirmedEvent(event: OrderConfirmedEvent) {
     this._state = this._stateMachine.MoveNext(event);
-    ++ this.version;
+
+    if (this.validateVersion(this.version, event.version)) {
+      this.version = event.version;
+    } else {
+      throw new ConcurrencyException();
+    }
   }
 
-  public onOrderDeclinedEvent(event: OrderCreatedEvent) {
+  public onOrderDeclinedEvent(event: OrderDeclinedEvent) {
     this._state = this._stateMachine.MoveNext(event);
-    ++ this.version;
+
+    if (this.validateVersion(this.version, event.version)) {
+      this.version = event.version;
+    } else {
+      throw new ConcurrencyException();
+    }
   }
 
-  public onOrderDeliveredEvent(event: OrderCreatedEvent) {
+  public onOrderDeliveredEvent(event: OrderDeliveredEvent) {
     this._state = this._stateMachine.MoveNext(event);
-    ++ this.version;
+
+    if (this.validateVersion(this.version, event.version)) {
+      this.version = event.version;
+    } else {
+      throw new ConcurrencyException();
+    }
+  }
+
+  validateVersion(currentVersion: number, nexVersion: number) {
+    return (nexVersion - currentVersion == 1);
   }
 
   getProduct() {

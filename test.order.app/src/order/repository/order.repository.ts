@@ -1,3 +1,6 @@
+import { OrderDeliveredEvent } from './../event/impl/order-delivered.event';
+import { OrderDeclinedEvent } from './../event/impl/order-declined.event';
+import { OrderConfirmedEvent } from './../event/impl/order-confirmed.event';
 import { EventStoreRepository } from './../../core/event-module/repositories/event-store.repository';
 import { EventDoc } from './../../core/event-module/schemas/event.schema';
 import { Injectable, Inject } from '@nestjs/common';
@@ -20,8 +23,7 @@ export class OrderRepository extends EventStoreRepository {
 
   public async createOrder(product: string, amount: number, author: string) {
     const order = new OrderAggregate(this.getId());
-    order.setData({ product, amount, author });
-    order.createOrder();
+    order.createOrder({ product, amount, author });
     return order;
   }
 
@@ -45,7 +47,7 @@ export class OrderRepository extends EventStoreRepository {
     return aggregateModel;
   }
 
-  private mapDocEvent(x: EventDoc) : any {
+  private mapDocEvent(x: EventDoc): any {
     const obj = x.data;
     switch (x.type) {
       case 'OrderCreatedEvent':
@@ -56,6 +58,12 @@ export class OrderRepository extends EventStoreRepository {
           obj.author,
           obj.version,
         );
+      case 'OrderConfirmedEvent':
+        return new OrderConfirmedEvent(obj.aggregateId, obj.version);
+      case 'OrderDeclinedEvent':
+        return new OrderDeclinedEvent(obj.aggregateId, obj.version);
+      case 'OrderDeliveredEvent':
+        return new OrderDeliveredEvent(obj.aggregateId, obj.version);
       default:
         return null;
     }

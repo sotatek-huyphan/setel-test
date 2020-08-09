@@ -1,4 +1,5 @@
 import { ITransitionEvent } from '../../core/interfaces/transition-event.interface';
+import { UnprocessableEntityException } from '../../core/exceptions/unprocessable-entity.exception';
 import { OrderEvent } from './order-event.enum';
 import { OrderState } from "./order-state.enum";
 
@@ -34,7 +35,7 @@ export class OrderStateMachine {
 
   public MoveNext(event: ITransitionEvent) {
     this._currentState = this.GetNext(event);
-    if (this._currentState == null) throw new Error('Invalid transition');
+    if (this._currentState == null) throw new UnprocessableEntityException();
     return OrderState[this._currentState];
   }
 }

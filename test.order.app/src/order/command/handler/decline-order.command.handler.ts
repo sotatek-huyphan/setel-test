@@ -1,7 +1,7 @@
 import { OrderRepository } from './../../repository/order.repository';
 import { CommandHandler, ICommandHandler, EventPublisher } from '@nestjs/cqrs';
-import { DeclineOrderCommand } from '../impl/create-order.command';
 import { OrderAggregate } from '../models/order.aggregate';
+import { DeclineOrderCommand } from '../impl/decline-order.command';
 
 @CommandHandler(DeclineOrderCommand)
 export class DeclineOrderCommandHandler
