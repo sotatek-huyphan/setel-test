@@ -42,8 +42,11 @@ export class OrderController {
     return rs;
   }
 
-  @Put()
-  async cancelOrder(@Param('id') id: string) {
+  @Put(':id')
+  async cancelOrder(@Param('id') id: string, @Body() order: OrderDTO) {
+    if (!id) {
+      throw new HttpException({ error: 'BAD_REQUEST' }, HttpStatus.BAD_REQUEST);
+    }
     this._orderService.cancelOrder(id);
   }
 }

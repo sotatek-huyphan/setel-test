@@ -1,3 +1,4 @@
+import { NotFoundException } from './../../core/exceptions/not-found.exception';
 import { OrderDeliveredEvent } from './../event/impl/order-delivered.event';
 import { OrderDeclinedEvent } from './../event/impl/order-declined.event';
 import { OrderConfirmedEvent } from './../event/impl/order-confirmed.event';
@@ -27,12 +28,13 @@ export class OrderRepository extends EventStoreRepository {
     return order;
   }
 
-  public async verifyOrderPayment(product: string, amount: number) {
+  public async verifyOrderPayment(product: string, amount: number, author: string) {
     const pattern = { cmd: 'payment' };
     const payload: PaymentVerifyDTO = {
       PIN: '8asdj12kkasd',
       product: product,
       amount: amount,
+      author: author
     };
     const rs = await this.client.send(pattern, payload).toPromise();
     return rs;
@@ -42,6 +44,11 @@ export class OrderRepository extends EventStoreRepository {
     const eventDocs = await this.eventModel
       .find({ aggregateId: aggregateId })
       .exec();
+
+    if (eventDocs == null || eventDocs.length == 0) {
+      throw new NotFoundException("Aggregate not found");
+    }
+
     const aggregateModel: OrderAggregate = new OrderAggregate(aggregateId);
     aggregateModel.loadFromHistory(eventDocs.map(x => this.mapDocEvent(x)));
     return aggregateModel;

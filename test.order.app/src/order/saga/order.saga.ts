@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ICommand, ofType, Saga } from '@nestjs/cqrs';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, delay } from 'rxjs/operators';
 import { OrderRepository } from '../../order/repository/order.repository';
 import { ConfirmOrderCommand } from '../command/impl/confirm-order.command';
 import { DeclineOrderCommand } from '../command/impl/decline-order.command';
@@ -21,11 +21,12 @@ export class OrderSaga {
         const paymentValid = await this._orderRepository.verifyOrderPayment(
           event.product,
           event.amount,
+          event.author,
         );
         if (paymentValid.isSuccess) {
           return new ConfirmOrderCommand(event.aggregateId, event.author);
         } else {
-          return new DeclineOrderCommand(event.aggregateId, event.author);
+          return new DeclineOrderCommand(event.aggregateId);
         }
       }),
     );
@@ -35,6 +36,7 @@ export class OrderSaga {
   confirmedOder = (events$: Observable<any>): Observable<ICommand> => {
     return events$.pipe(
       ofType(OrderConfirmedEvent),
+      delay(200000),
       map(
         (event: OrderConfirmedEvent) =>
           new DeliveryOrderCommand(event.aggregateId),

@@ -1,3 +1,4 @@
+import { DeclineOrderCommand } from './../command/impl/decline-order.command';
 import { GetOrderQuery } from './../query/impl/order.query';
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -16,7 +17,10 @@ export class OrderService {
     return await this._commandBus.execute(orderCommand);
   }
 
-  cancelOrder(id: string) {}
+  async cancelOrder(id: string) {
+    const cancelCommand: DeclineOrderCommand = new DeclineOrderCommand(id);
+    return await this._commandBus.execute(cancelCommand);
+  }
 
   async checkOrderStatus(id: string) {
     return await this.getOrder(id);

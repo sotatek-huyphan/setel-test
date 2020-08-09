@@ -12,7 +12,7 @@ export class DeclineOrderCommandHandler
     ) {}
 
     async execute(command: DeclineOrderCommand): Promise<any> {
-      const { orderId, author } = command;
+      const { orderId } = command;
       let orderAggregate = this._publisher.mergeObjectContext(
         await this._orderRepository.Rehydrate(orderId)
       );
