@@ -1,23 +1,23 @@
-import { NotFoundException } from './../../core/exceptions/not-found.exception';
-import { OrderDeliveredEvent } from './../event/impl/order-delivered.event';
-import { OrderDeclinedEvent } from './../event/impl/order-declined.event';
-import { OrderConfirmedEvent } from './../event/impl/order-confirmed.event';
-import { EventStoreRepository } from './../../core/event-module/repositories/event-store.repository';
-import { EventDoc } from './../../core/event-module/schemas/event.schema';
-import { Injectable, Inject } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { EVENT_STORE_PROVIDER } from '../../core/constant/app.constant';
-import { OrderAggregate } from '../command/models/order.aggregate';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { Model } from 'mongoose';
+import { EVENT_STORE_PROVIDER, PAYMENT_SERVICE } from '../../core/constant/app.constant';
+import { OrderAggregate } from '../command/models/order.aggregate';
 import { PaymentVerifyDTO } from '../dto/payment-verify.dto';
 import { OrderCreatedEvent } from '../event/impl/order-created.event';
+import { EventStoreRepository } from './../../core/event-module/repositories/event-store.repository';
+import { EventDoc } from './../../core/event-module/schemas/event.schema';
+import { NotFoundException } from './../../core/exceptions/not-found.exception';
+import { OrderConfirmedEvent } from './../event/impl/order-confirmed.event';
+import { OrderDeclinedEvent } from './../event/impl/order-declined.event';
+import { OrderDeliveredEvent } from './../event/impl/order-delivered.event';
 
 @Injectable()
 export class OrderRepository extends EventStoreRepository {
   constructor(
     @Inject(EVENT_STORE_PROVIDER)
     protected readonly eventModel: Model<EventDoc>,
-    @Inject('PAYMENT_SERVICE') private readonly client: ClientProxy,
+    @Inject(PAYMENT_SERVICE) private readonly client: ClientProxy,
   ) {
     super(eventModel);
   }
@@ -52,7 +52,7 @@ export class OrderRepository extends EventStoreRepository {
     return this.replay(aggregateId, eventDocs);
   }
 
-  public replay(aggregateId: string, eventDocs: EventDoc[]) {
+  private replay(aggregateId: string, eventDocs: EventDoc[]) {
     const aggregateModel: OrderAggregate = new OrderAggregate(aggregateId);
     aggregateModel.loadFromHistory(eventDocs.map(x => this.mapDocEvent(x)));
     return aggregateModel;

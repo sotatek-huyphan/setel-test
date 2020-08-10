@@ -23,7 +23,7 @@ export class OrderService {
     return await this._commandBus.execute(cancelCommand);
   }
 
-  async checkOrderStatus(id: string) {
+  async checkOrderStatus(id: string) { 
     return await this.getOrder(id);
   }
 

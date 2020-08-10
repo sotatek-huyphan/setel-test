@@ -39,4 +39,8 @@ export class OrderStateMachine {
     if (this._currentState == null) throw new UnprocessableEntityException();
     return OrderState[this._currentState];
   }
+
+  public GetCurrentState() {
+    return OrderState[this._currentState];
+  }
 }
