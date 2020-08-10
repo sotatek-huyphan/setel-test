@@ -99,7 +99,7 @@ export class OrderAggregate extends BaseAggregateRoot {
   }
 
   validateVersion(currentVersion: number, nexVersion: number) {
-    return (nexVersion - currentVersion == 1);
+    return (nexVersion - currentVersion != 0);
   }
 
   getProduct() {
