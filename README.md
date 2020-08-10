@@ -14,16 +14,16 @@ This repository contains 3 project:
 $ npm install
 ```
 
-## Running the app
+## Running the app (Payment app should be started first)
 
 ```bash
-# development (Payment app should be started first)
 $ npm start 
-
+```
 
 ## Running the test (Order app)
 
-# test 
-$ npm test 
+```bash
+$ npm test  
+```
 
 ### Phan Quang Huy
