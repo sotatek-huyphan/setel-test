@@ -5,7 +5,8 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
-import React from 'react';
+import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 
 
 const api = axios.create({
@@ -35,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function OrderDetail(props) {
   const classes = useStyles();
+  let [redirect, setRedirect] = useState({
+    redirectToList: false,
+  });
 
   async function submit(e) {
     e.preventDefault();
@@ -48,17 +52,31 @@ export default function OrderDetail(props) {
     }
 
     api.post("/order", { product: product, amount: amount, user: user })
-    .then(res => {
-      alert('Work submitted');
-    })
-    .catch(error => {
-      console.log("Error");
-    })
+      .then(res => {
+        alert('Work submitted');
+        redirectToList();
+      })
+      .catch(error => {
+        console.log("Error");
+      })
+  }
+
+  const redirectToList = () => {
+    setRedirect({ redirectToList: true });
+  }
+
+  const renderRedirect = () => {
+    if (redirect.redirectToList) {
+      return <Redirect to={{
+        pathname: '',
+      }} />
+    }
   }
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      {renderRedirect()}
       <div className={classes.paper}>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
@@ -101,9 +119,15 @@ export default function OrderDetail(props) {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={async (e) =>  await submit(e)}
+            onClick={async (e) => await submit(e)}
           >
             Submit
+          </Button>
+          <Button
+            fullWidth
+            onClick={async (e) => await redirectToList(e)}
+          >
+            Go back
           </Button>
         </form>
       </div>

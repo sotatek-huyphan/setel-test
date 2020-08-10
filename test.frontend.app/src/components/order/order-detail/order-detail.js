@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { Redirect } from 'react-router-dom';
 
 
 const api = axios.create({
@@ -42,6 +43,9 @@ export default function OrderDetail(props) {
     user: '',
     state: ''
   });
+  let [redirect, setRedirect] = useState({
+    redirectToList: false,
+  });
 
   useEffect(() => {
 
@@ -66,6 +70,7 @@ export default function OrderDetail(props) {
     api.patch(`/order/${id}`, {})
       .then(res => {
         alert('Work submitted');
+        redirectToList();
       })
       .catch(error => {
         const errorResponse = error.response;
@@ -77,9 +82,22 @@ export default function OrderDetail(props) {
       })
   }
 
+  const redirectToList = () => {
+    setRedirect({ redirectToList: true });
+  }
+
+  const renderRedirect = () => {
+    if (redirect.redirectToList) {
+      return <Redirect to={{
+        pathname: '',
+      }} />
+    }
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      {renderRedirect()}
       <div className={classes.paper}>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
@@ -139,6 +157,13 @@ export default function OrderDetail(props) {
             onClick={async (e) => await submit(e)}
           >
             Cancel order
+          </Button>
+
+          <Button
+            fullWidth
+            onClick={async (e) => await redirectToList(e)}
+          >
+            Go back
           </Button>
         </form>
       </div>
