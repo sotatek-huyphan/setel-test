@@ -86,6 +86,7 @@ export class OrderRepository extends EventStoreRepository {
           obj.amount,
           obj.author,
           obj.version,
+          obj.createdDate,
         );
       case 'OrderConfirmedEvent':
         return new OrderConfirmedEvent(obj.aggregateId, obj.version);

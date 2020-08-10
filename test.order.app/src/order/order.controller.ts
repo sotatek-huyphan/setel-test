@@ -53,6 +53,6 @@ export class OrderController {
     if (!id) {
       throw new HttpException({ error: 'BAD_REQUEST' }, HttpStatus.BAD_REQUEST);
     }
-    this._orderService.cancelOrder(id);
+    await this._orderService.cancelOrder(id);
   }
 }

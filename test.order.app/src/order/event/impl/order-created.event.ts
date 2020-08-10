@@ -7,6 +7,7 @@ export class OrderCreatedEvent extends BaseDomainEvent {
     public readonly amount: number,
     public readonly author: string,
     public readonly version: number,
+    public readonly createdDate: Date,
   ) {
     super(aggregateId, version);
   }

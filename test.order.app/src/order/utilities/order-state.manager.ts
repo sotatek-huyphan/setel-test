@@ -21,6 +21,7 @@ export class OrderStateMachine {
     this.addTransition(OrderState.Created, OrderEvent.OrderConfirmedEvent, OrderState.Confirmed);
     this.addTransition(OrderState.Created, OrderEvent.OrderDeclinedEvent, OrderState.Cancelled);
     this.addTransition(OrderState.Confirmed, OrderEvent.OrderDeliveredEvent, OrderState.Delivered);
+    this.addTransition(OrderState.Confirmed, OrderEvent.OrderDeclinedEvent, OrderState.Cancelled);
   }
 
   private addTransition(state: OrderState, event: number, result: OrderState) {

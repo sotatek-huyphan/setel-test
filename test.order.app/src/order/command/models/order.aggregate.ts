@@ -11,6 +11,7 @@ export class OrderAggregate extends BaseAggregateRoot {
   private _product: string;
   private _amount: number;
   private _author: string;
+  private _createdDate: Date;
 
   private readonly _stateMachine: OrderStateMachine;
 
@@ -32,6 +33,7 @@ export class OrderAggregate extends BaseAggregateRoot {
       amount,
       author,
       this.version + 1,
+      new Date()
     );
     this.apply(event);
   }
@@ -53,10 +55,11 @@ export class OrderAggregate extends BaseAggregateRoot {
 
   public onOrderCreatedEvent(event: OrderCreatedEvent) {
     this._state = this._stateMachine.MoveNext(event);
-    const { product, amount, author, version } = event;
+    const { product, amount, author, version, createdDate } = event;
     this._product = product;
     this._amount = amount;
     this._author = author;
+    this._createdDate = createdDate;
 
     if (this.validateVersion(this.version, version)) {
       this.version = version;
@@ -113,5 +116,9 @@ export class OrderAggregate extends BaseAggregateRoot {
 
   getAuthor() {
     return this._author;
+  }
+
+  getCreatedDate() {
+    return this._createdDate;
   }
 }

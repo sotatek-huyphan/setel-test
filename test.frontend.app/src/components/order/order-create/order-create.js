@@ -5,12 +5,13 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 
 const api = axios.create({
   baseURL: `http://localhost:9869/`
 })
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -33,48 +34,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function OrderDetail(props) {
-  const id = props.location.state.id;
   const classes = useStyles();
-  let [state, setState] = useState({
-    id: '',
-    product: '',
-    amount: '',
-    user: '',
-    state: ''
-  });
-
-  useEffect(() => {
-
-    api.get(`/order/${id}`)
-      .then(res => {
-        const data = res.data;
-        setState({
-          id: data._id,
-          product: data.product,
-          amount: data.amount,
-          user: data.user,
-          state: data.state
-        })
-      })
-      .catch(error => {
-        console.log("Error")
-      })
-  }, [])
 
   async function submit(e) {
     e.preventDefault();
-    api.patch(`/order/${id}`, {})
-      .then(res => {
-        alert('Work submitted');
-      })
-      .catch(error => {
-        const errorResponse = error.response;
-        if (errorResponse.status == 422) {
-          alert('Invalid state transition');
-        } else {
-          alert('Internal error');
-        }
-      })
+    const product = document.getElementById('product').value;
+    const amount = document.getElementById('amount').value;
+    const user = document.getElementById('user').value;
+
+    if (!product || !amount || !user || !product.trim() || !user.trim() || amount <= 0) {
+      alert('Property is not valid!');
+      return;
+    }
+
+    api.post("/order", { product: product, amount: amount, user: user })
+    .then(res => {
+      alert('Work submitted');
+    })
+    .catch(error => {
+      console.log("Error");
+    })
   }
 
   return (
@@ -85,9 +64,8 @@ export default function OrderDetail(props) {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                disabled
                 name="product"
-                value={state.product}
+                // variant="outlined"
                 required
                 fullWidth
                 id="product"
@@ -97,9 +75,8 @@ export default function OrderDetail(props) {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                disabled
                 name="amount"
-                value={state.amount}
+                // variant="outlined"
                 required
                 type="number"
                 fullWidth
@@ -109,24 +86,12 @@ export default function OrderDetail(props) {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                disabled
                 name="user"
-                value={state.user}
+                // variant="outlined"
                 required
                 fullWidth
                 id="user"
                 label="User"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                disabled
-                name="status"
-                value={state.state}
-                required
-                fullWidth
-                id="status"
-                label="Status"
               />
             </Grid>
           </Grid>
@@ -136,9 +101,9 @@ export default function OrderDetail(props) {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={async (e) => await submit(e)}
+            onClick={async (e) =>  await submit(e)}
           >
-            Cancel order
+            Submit
           </Button>
         </form>
       </div>

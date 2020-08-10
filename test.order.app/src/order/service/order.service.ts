@@ -34,6 +34,9 @@ export class OrderService {
 
   async listOrder(): Promise<any[]> {
     const listOrderQuery: ListOrderQuery = new ListOrderQuery();
-    return await this._queryBus.execute(listOrderQuery);
+    const rs = await this._queryBus.execute(listOrderQuery) as any[];
+    return rs.sort((a, b) => {
+      return b.createdDate.getTime() - a.createdDate.getTime();
+    });
   }
 }

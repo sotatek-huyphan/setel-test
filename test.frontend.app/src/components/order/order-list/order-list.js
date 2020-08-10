@@ -56,10 +56,11 @@ const OrderList = () => {
     { title: "user", field: "user" }
   ]
   const [data, setData] = useState([]);
-  let [redirect, setRedirect] = useState(false);
+  let [redirect, setRedirect] = useState({
+    redirectToDetail: false,
+    redirectToCreate: false,
+  });
   const [currentItem, setCurrentItem] = useState('');
-  const [iserror, setIserror] = useState(false)
-  const [errorMessages, setErrorMessages] = useState([])
 
   useEffect(() => {
     api.get("/orders")
@@ -71,23 +72,33 @@ const OrderList = () => {
       })
   }, [])
 
-
   const renderRedirect = () => {
-    if (redirect) {
+    if (redirect.redirectToDetail) {
       return <Redirect to={{
         pathname: '/detail',
         state: { id: currentItem }
       }} />
     }
+    if (redirect.redirectToCreate) {
+      return <Redirect to={{
+        pathname: '/create'
+      }} />
+    }
   }
 
   const createItem = () => {
-    setRedirect(true);
+    setRedirect({
+      redirectToDetail: false,
+      redirectToCreate: true
+    });
   }
 
   const editItem = (id) => {
     setCurrentItem(id);
-    setRedirect(true);
+    setRedirect({
+      redirectToDetail: true,
+      redirectToCreate: false
+    });
   }
 
   return (
@@ -96,15 +107,7 @@ const OrderList = () => {
       <Grid container spacing={1}>
         <Grid item xs={3}></Grid>
         <Grid item xs={6}>
-          <div>
-            {iserror &&
-              <Alert severity="error">
-                {errorMessages.map((msg, i) => {
-                  return <div key={i}>{msg}</div>
-                })}
-              </Alert>
-            }
-          </div>
+
           <MaterialTable
             title="Order list"
             columns={columns}
@@ -118,7 +121,7 @@ const OrderList = () => {
                 onClick: (event) => createItem()
               },
               {
-                icon: tableIcons.Check,
+                icon: tableIcons.DetailPanel,
                 tooltip: 'Edit order',
                 onClick: (event, rowData) => editItem(rowData._id)
               },
