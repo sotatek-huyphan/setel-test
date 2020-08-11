@@ -12,10 +12,11 @@ Nodejs version: 12.8.2.
 Mongodb version: 3.6.8
 
 ## Installation
-
+ Install modules in all 3 project
 ```bash
 $ npm install
 ```
+ Create .env file using the example in .env.example
 
 ## Running the app (Payment app should be started first)
 
