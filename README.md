@@ -6,7 +6,7 @@ This repository contains 3 project:
 - Front end app (reactjs)
 - Api backend order app (nestjs)
 - Payment app (nestjs)
-- Database: local Mongodb at "mongodb://localhost:27017/orderdb" , can be changed at "app.constant" file in Api backend order app.
+- Database: Mongodb, the connection string can be changed in .env file.
 
 Nodejs version: 12.8.2.
 Mongodb version: 3.6.8
