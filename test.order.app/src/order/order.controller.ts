@@ -17,11 +17,10 @@ import { OrderService } from './service/order.service';
 export class OrderController {
   private readonly _logger = new Logger(OrderController.name);
 
-  constructor(private _orderService: OrderService) {}
+  constructor(private _orderService: OrderService) { }
 
   @Post('order')
   async createOrder(@Body() order: OrderDTO) {
-    // return res.status(500);
     const rs = await this._orderService.createOrder(order);
     if (!rs) {
       throw new HttpException(
@@ -29,6 +28,7 @@ export class OrderController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+    return rs;
   }
 
   @Get('order/:id')
