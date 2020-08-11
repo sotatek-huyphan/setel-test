@@ -1,16 +1,4 @@
 
-export const AppSetting = {
-  AppPort: 9869,
-  PaymentService: {
-    Name: 'PAYMENT_SERVICE',
-    Host: '127.0.0.1',
-    Port: 8888
-  },
-  MongoDb: {
-    ConnectionString: 'mongodb://localhost:27017/orderdb',
-  }
-}
-
 export const appErrors = {
   invalidArgument: 'Invalid argument'
 }

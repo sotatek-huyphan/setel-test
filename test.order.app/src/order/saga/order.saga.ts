@@ -1,3 +1,4 @@
+import configuration from '../../config/configuration';
 import { Injectable } from '@nestjs/common';
 import { ICommand, ofType, Saga } from '@nestjs/cqrs';
 import { Observable } from 'rxjs';
@@ -36,7 +37,7 @@ export class OrderSaga {
   confirmedOder = (events$: Observable<any>): Observable<ICommand> => {
     return events$.pipe(
       ofType(OrderConfirmedEvent),
-      delay(20000),
+      delay(configuration().process.deliveryDelay),
       map(
         (event: OrderConfirmedEvent) =>
           new DeliveryOrderCommand(event.aggregateId),

@@ -17,8 +17,8 @@ const memoryDatabaseProviders = [
   },
 ];
 
-const dispose = () => {
-  mongod.stop();
+export const closeMongooseMemory = async () => {
+  if (mongod) await mongod.stop();
 }
 
 @Module({

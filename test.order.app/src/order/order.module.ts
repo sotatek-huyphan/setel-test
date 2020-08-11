@@ -1,4 +1,6 @@
-import { PAYMENT_SERVICE, AppSetting } from './../core/constant/app.constant';
+
+import configuration from '../config/configuration';
+import { PAYMENT_SERVICE } from './../core/constant/app.constant';
 
 import { Module, OnModuleInit } from '@nestjs/common';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
@@ -42,11 +44,11 @@ const QueryHandlers = [GetOrderQueryHandler, ListOrderQueryHandler];
     DatabaseModule,
     ClientsModule.register([
       {
-        name: PAYMENT_SERVICE,
+        name: 'PAYMENT_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: AppSetting.PaymentService.Host,
-          port: AppSetting.PaymentService.Port,
+          host: configuration().services.paymentService.host,
+          port: configuration().services.paymentService.port,
         },
       },
     ])
@@ -67,7 +69,7 @@ export class OrderModule implements OnModuleInit {
   constructor(
     private readonly _event$: EventBus,
     private readonly _eventPublisher: AppEventPublisher,
-  ) {}
+  ) { }
 
   onModuleInit() {
     /*
