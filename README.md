@@ -17,7 +17,8 @@ Mongodb version: 3.6.8
 $ npm install
 ```
  Create .env file using the example in .env.example in all 3 project
- (The api url config of frontend app and backend api must be matched, and the payment config between backend api and payment service must be matched)
+  - The api url config of frontend app and backend api must be matched
+  - The payment config between backend api and payment service must be matched
 
 ## Running the app (Payment app should be started first)
 
