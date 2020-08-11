@@ -10,7 +10,7 @@ import { Redirect } from 'react-router-dom';
 
 
 const api = axios.create({
-  baseURL: `http://localhost:9869/`
+  baseURL: process.env.REACT_APP_API
 })
 
 const useStyles = makeStyles((theme) => ({

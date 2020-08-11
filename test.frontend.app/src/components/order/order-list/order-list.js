@@ -43,7 +43,7 @@ const tableIcons = {
 };
 
 const api = axios.create({
-  baseURL: `http://localhost:9869/`
+  baseURL: process.env.REACT_APP_API
 })
 
 const OrderList = () => {
