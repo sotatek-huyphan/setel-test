@@ -8,6 +8,9 @@ This repository contains 3 project:
 - Payment app (nestjs)
 - Database: local Mongodb at "mongodb://localhost:27017/orderdb" , can be changed at "app.constant" file in Api backend order app.
 
+Nodejs version: 12.8.2
+Mongodb version: 3.6.8
+
 ## Installation
 
 ```bash
