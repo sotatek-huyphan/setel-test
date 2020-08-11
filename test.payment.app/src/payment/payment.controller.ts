@@ -11,7 +11,6 @@ export class PaymentController {
   payment(param: PaymentVerifyDTO) {
     const verified = this._paymentService.verify(param);
     const result = { isSuccess: verified };
-    console.log(result);
     return result;
   }
 }
